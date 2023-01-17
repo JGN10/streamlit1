@@ -58,22 +58,23 @@ def parametros():
                                                       round(float(df_calculos["DiabetesPedigreeFunction"]["max"]),3),
                                                      round(float(df_calculos["DiabetesPedigreeFunction"]["mean"]),3))
 
+
         data = {'Pregnancies': escalar_maxmin (Pregnancies, 
                                                 df_calculos["Pregnancies"]["max"],
                                                 df_calculos["Pregnancies"]["min"]),
                 'Glucose':escalar_maxmin (Glucose, df_calculos["Glucose"]["max"], df_calculos["Glucose"]["min"]),
+                'BloodPressure': escalar_maxmin (BloodPressure, df_calculos["BloodPressure"]["max"],
+                                                 df_calculos["BloodPressure"]["min"]),
                 'SkinThickness': escalar_maxmin (SkinThickness,
                                                  df_calculos["SkinThickness"]["max"],
                                                  df_calculos["SkinThickness"]["min"]),
-                'BMI': escalar_maxmin (BMI, df_calculos["BMI"]["max"], df_calculos["BMI"]["min"]),
-                "Age": escalar_maxmin (Age, df_calculos["Age"]["max"], df_calculos["Age"]["min"]),
-                'BloodPressure': escalar_maxmin (BloodPressure, df_calculos["BloodPressure"]["max"],
-                                                 df_calculos["BloodPressure"]["min"]),
                 'Insulin': escalar_maxmin (Insulin, df_calculos["Insulin"]["max"], 
                                                  df_calculos["Insulin"]["min"]),
+                'BMI': escalar_maxmin (BMI, df_calculos["BMI"]["max"], df_calculos["BMI"]["min"]),
                 'DiabetesPedigreeFunction': escalar_maxmin (DiabetesPedigreeFunction,
                                                             df_calculos["DiabetesPedigreeFunction"]["max"],
-                                                            df_calculos["DiabetesPedigreeFunction"]["min"])
+                                                            df_calculos["DiabetesPedigreeFunction"]["min"]),
+                "Age": escalar_maxmin (Age, df_calculos["Age"]["max"], df_calculos["Age"]["min"])
                 }
         #print(BMI)
         data1 = {'Embarazos': Pregnancies,

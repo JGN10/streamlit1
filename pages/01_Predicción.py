@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 from sklearn import preprocessing
 import connection
-import psycopg2
-import pymongo
+#import psycopg2
+#import pymongo
 import setting
 from datetime import datetime
 import sqlite3 as sql
@@ -200,18 +200,23 @@ if st.button('Predicción'):
                         print(row_p[0])
                         print(row_p)
                         fichero_pkl = str(row_p[0])
-                        print('después de row_p')
+                        print('después de row_p', fichero_pkl)
                         porcentaje = row_p[1]
                         print('después de row_p porcentaje')
                         break
                 with open(fichero_pkl, "rb") as li:
                         guarda_modelo = pickle.load(li)
+                print("paso 1")
                 prediccion = guarda_modelo.predict(df)
+                print("paso 2")
                 st.session_state.prediccion= int(prediccion)
+                print("paso 3")
                 if prediccion == 0:
                         #st.success(f"El modelo {st.session_state.modelo} indica que NO padecerá diabetes")
+                        print("paso 4")
                         st.success(f"El modelo {modelo_seleccionado} con una exactitud de {porcentaje} indica que NO padecerá diabetes")
                 else:
+                        print("paso 5")
                         st.error(f"El modelo {modelo_seleccionado} con una exactitud de {porcentaje} indica que SI padecerá diabetes") 
                 st.write("Puede guardar esta predicción para ayudarnos a mejorar el modelo utilizado y obtener mejores resultados")
                 st.write("Se disponen de varias tecnologias para almacenar su predicción. Pulse el botón que más le interese")

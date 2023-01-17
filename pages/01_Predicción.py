@@ -157,7 +157,7 @@ def click_sqlite():
                 st.session_state.predicc_guardada = 1
                 
         except Exception as err:
-                print(f"Unexpected {err=}, {type(err)=}")
+                print(f"Unexpected {err}, {type(err)}")
                 #print("Error insertar registros: %s" % str(e))
                 st.session_state.predicc_guardada = 2
                 conexion.rollback()

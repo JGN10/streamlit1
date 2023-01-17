@@ -156,8 +156,9 @@ def click_sqlite():
                 conexion.commit()
                 st.session_state.predicc_guardada = 1
                 
-        except psycopg2.Error as e:
-                print("Error insertar registros: %s" % str(e))
+        except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
+                #print("Error insertar registros: %s" % str(e))
                 st.session_state.predicc_guardada = 2
                 conexion.rollback()
                 

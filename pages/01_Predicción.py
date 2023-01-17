@@ -208,6 +208,7 @@ if st.button('Predicción'):
                 with open(fichero_pkl, "rb") as li:
                         guarda_modelo = pickle.load(li)
                 print("paso 1")
+                print(df)
                 prediccion = guarda_modelo.predict(df)
                 print("paso 2")
                 st.session_state.prediccion= int(prediccion)

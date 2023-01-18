@@ -143,9 +143,7 @@ def click_sqlite():
                         cursor_cargas = c.execute('SELECT MAX(codigo) FROM cargas')    
                         print("después del executed")
                         for fila in cursor_cargas.fetchall():
-                        c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?) RETURNING codigo", (usuario_logeado,datetime.now()))
-                        print("después del executed")
-                        for fila in c.fetchall():
+                                #c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?) RETURNING codigo", (usuario_logeado,datetime.now()))
                                 print("dentro del for")
                                 codigo_carga = fila[0]
                         print("fuera del for ")

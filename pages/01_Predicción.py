@@ -122,6 +122,8 @@ def click_csv():
 
 def click_sqlite():
         try:
+                print("estamos en la funcion")
+                logging.DEBUG("estamos en la funcion") 
                 if "usuario" in st.session_state:
                         usuario_logeado = st.session_state.usuario
                 else:
@@ -253,6 +255,7 @@ if st.button('Predicción'):
                 with col2:
                         st.subheader("Base de datos")
                         st.write("Para guardar su predicción en una base de datos SQLite, pulse el botón Base SQLite")
+                        logging.DEBUG("Antes del boton de click_sqlite")
                         st.button("Base SQLite", on_click=click_sqlite)
                 
                 #if st.session_state.mongodb != "":

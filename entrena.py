@@ -50,7 +50,8 @@ def entrena_sqlite(usuario):
         
 
         
-        cursor_entrenamiento = c.execute ('insert into entrenamientos (usuario,fecha) values (?,?) returning codigo', (usuario,datetime.now()))
+        c.execute ('insert into entrenamientos (usuario,fecha) values (?,?)', (usuario,datetime.now()))
+        cursor_entrenamiento = c.execute ('select max(codigo) from entrenamientos')
         for row in cursor_entrenamiento.fetchall():
             codigo_entrenamiento = row[0]
             print('el codigo de entrenamiento ', codigo_entrenamiento)
@@ -113,7 +114,8 @@ def entrena_csv(usuario, nuevo_csv):
                 for linea in archivo:
                     f.write(linea)
 
-        cursor_entrenamiento = c.execute ('insert into entrenamientos (usuario,fecha) values (?,?) returning codigo', (usuario,datetime.now()))
+        c.execute ('insert into entrenamientos (usuario,fecha) values (?,?)', (usuario,datetime.now()))
+        cursor_entrenamiento = c.execute ('select max(codigo) from entrenamientos')
         for row in cursor_entrenamiento.fetchall():
             codigo_entrenamiento = row[0]
         conexion.commit()

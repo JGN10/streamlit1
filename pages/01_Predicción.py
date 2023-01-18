@@ -126,11 +126,17 @@ def click_sqlite():
                 else:
                         usuario_logeado = 'Anónimo'
                 print("en el click sqlite")
+                print("en el click sqlite antes de sqlite")
                 conexion = sql.connect(st.session_state.sqlite)
+                print(f"en el click sqlite, después de la conexión variable sqlite {st.session_state.sqlite}")
                 c = conexion.cursor()
+                print("después del cursor")
                 c.execute("insert into cargas (usuario,fecha) values (?,?) returning codigo", (usuario_logeado,datetime.now()))
+                print("después del executed")
                 for fila in c.fetchall():
+                        print("dentro del for")
                         codigo_carga = fila[0]
+                print("fuera del for")
                 cadena = str(int(df1.iloc[0]["Embarazos"]))\
                         + "," + str(int(df1.iloc[0]["Glucosa"])) \
                         + "," + str(int(df1.iloc[0]["Presión arterial"]))\

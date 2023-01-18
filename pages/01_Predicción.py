@@ -247,12 +247,15 @@ if st.button('Predicción'):
         finally:
                 conexion.close()
 
-if st.session_state.predicc_guardada == 1:
-        st.success("Predicción guardada correctamente")
-        st.session_state.predicc_guardada = 0
-elif st.session_state.predicc_guardada == 2:
-        st.error("Predicción NO guardada")
-        st.session_state.predicc_guardada = 0
+if "predicc_guardada" in st.session_state:
+        if st.session_state.predicc_guardada == 1:
+                st.success("Predicción guardada correctamente")
+                st.session_state.predicc_guardada = 0
+        elif st.session_state.predicc_guardada == 2:
+                st.error("Predicción NO guardada")
+                st.session_state.predicc_guardada = 0
+        else:
+                pass
 else:
         pass
 

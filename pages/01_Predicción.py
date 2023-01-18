@@ -123,7 +123,6 @@ def click_csv():
 def click_sqlite():
         try:
                 print("estamos en la funcion")
-                logging.DEBUG("estamos en la funcion") 
                 if "usuario" in st.session_state:
                         usuario_logeado = st.session_state.usuario
                 else:
@@ -136,7 +135,7 @@ def click_sqlite():
                         c = conexion.cursor()
                         print("después del cursor")
                 except Exception as e:
-                        logging.WARNING("Error conectar base de datos %s" % str(e))
+                        # logging.WARNING("Error conectar base de datos %s" % str(e))
                         print("Error conectar base de datos %s" % str(e))
                 try:
                         c.execute("insert into cargas (usuario,fecha) values (?,?) returning codigo", (usuario_logeado,datetime.now()))
@@ -146,7 +145,7 @@ def click_sqlite():
                                 codigo_carga = fila[0]
                         print("fuera del for ")
                 except Exception as e:
-                       logging.WARNING("Error insertar base de datos %s" % str(e)) 
+                #        logging.WARNING("Error insertar base de datos %s" % str(e)) 
                        print("Error insertar base de datos %s" % str(e))
                 cadena = str(int(df1.iloc[0]["Embarazos"]))\
                         + "," + str(int(df1.iloc[0]["Glucosa"])) \
@@ -255,7 +254,7 @@ if st.button('Predicción'):
                 with col2:
                         st.subheader("Base de datos")
                         st.write("Para guardar su predicción en una base de datos SQLite, pulse el botón Base SQLite")
-                        logging.DEBUG("Antes del boton de click_sqlite")
+                        print("Antes del boton de click_sqlite")
                         st.button("Base SQLite", on_click=click_sqlite)
                 
                 #if st.session_state.mongodb != "":

@@ -253,6 +253,8 @@ if st.session_state.predicc_guardada == 1:
 elif st.session_state.predicc_guardada == 2:
         st.error("Predicción NO guardada")
         st.session_state.predicc_guardada = 0
+else:
+        pass
 
 
 if __name__ == '__main__':

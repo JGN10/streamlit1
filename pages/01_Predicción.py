@@ -136,7 +136,7 @@ def click_sqlite():
                 for fila in c.fetchall():
                         print("dentro del for")
                         codigo_carga = fila[0]
-                print("fuera del for")
+                print("fuera del for ")
                 cadena = str(int(df1.iloc[0]["Embarazos"]))\
                         + "," + str(int(df1.iloc[0]["Glucosa"])) \
                         + "," + str(int(df1.iloc[0]["Presión arterial"]))\

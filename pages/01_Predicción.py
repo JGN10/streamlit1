@@ -11,6 +11,7 @@ from datetime import datetime
 import sqlite3 as sql
 import time
 import sys
+import logging
 
 def main():
         st.warning("Recuerde que esta app es con fines educativos, no es una prueba médica ante cualquier resultado alarmante consulte a su médico")
@@ -127,16 +128,24 @@ def click_sqlite():
                         usuario_logeado = 'Anónimo'
                 print("en el click sqlite")
                 print("en el click sqlite antes de sqlite")
-                conexion = sql.connect(st.session_state.sqlite)
-                print(f"en el click sqlite, después de la conexión variable sqlite {st.session_state.sqlite}")
-                c = conexion.cursor()
-                print("después del cursor")
-                c.execute("insert into cargas (usuario,fecha) values (?,?) returning codigo", (usuario_logeado,datetime.now()))
-                print("después del executed")
-                for fila in c.fetchall():
-                        print("dentro del for")
-                        codigo_carga = fila[0]
-                print("fuera del for ")
+                try:
+                        conexion = sql.connect(st.session_state.sqlite)
+                        print(f"en el click sqlite, después de la conexión variable sqlite {st.session_state.sqlite}")
+                        c = conexion.cursor()
+                        print("después del cursor")
+                except Exception as e:
+                        logging.WARNING("Error conectar base de datos %s" % str(e))
+                        print("Error conectar base de datos %s" % str(e))
+                try:
+                        c.execute("insert into cargas (usuario,fecha) values (?,?) returning codigo", (usuario_logeado,datetime.now()))
+                        print("después del executed")
+                        for fila in c.fetchall():
+                                print("dentro del for")
+                                codigo_carga = fila[0]
+                        print("fuera del for ")
+                except Exception as e:
+                       logging.WARNING("Error insertar base de datos %s" % str(e)) 
+                       print("Error insertar base de datos %s" % str(e))
                 cadena = str(int(df1.iloc[0]["Embarazos"]))\
                         + "," + str(int(df1.iloc[0]["Glucosa"])) \
                         + "," + str(int(df1.iloc[0]["Presión arterial"]))\

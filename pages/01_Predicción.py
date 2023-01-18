@@ -138,7 +138,7 @@ def click_sqlite():
                         # logging.WARNING("Error conectar base de datos %s" % str(e))
                         print("Error conectar base de datos %s" % str(e))
                 try:
-                        c.execute("insert into cargas (usuario,fecha) values (?,?) returning codigo", (usuario_logeado,datetime.now()))
+                        c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?) RETURNING codigo", (usuario_logeado,datetime.now()))
                         print("después del executed")
                         for fila in c.fetchall():
                                 print("dentro del for")

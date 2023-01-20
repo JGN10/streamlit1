@@ -21,16 +21,11 @@ def valida_encriptado(texto,texto_encriptado):
 
 def selecciona_usuario(usuario,password):
     try:
-        print('valor de usuario en selecciona usuario ', usuario)
-        print('valor de password en selecciona usuario ', password)
         c.execute('SELECT a.codigo, r.codigo, r.rol FROM usuarios as a join roles as r on a.role = r.codigo WHERE a.usuario =? AND a.password = ?',(usuario,password))
-        print("despues del select ")
         for fila in c.fetchall():
-            print('en el bucle de fetchall ',fila[0])
             return fila[0],fila[1], fila[2]
         return False, False, False
     except:
-        print("en el error de selecciona usuario")
         print("Error inesperado:", sys.exc_info()[0])
         return False, False, False
     finally:
@@ -113,7 +108,6 @@ def ventana_administracion():
                             cadena = "No existen registros pendientes de tratar a través de SQLite "
                             st.write(cadena)
                     except:
-                        print("en el error de entrena sqlite usuario")
                         print("Error inesperado:", sys.exc_info()[0])
                     finally:
                         conexion.close()
@@ -126,24 +120,14 @@ def ventana_administracion():
 
 
 def introduce_usuario():
-    print("en introduce usuario")
-    #st.subheader("Introduce tu usuario y password")
     login_usuario = st.sidebar.text_input('Nombre de usuario')
     password_usuario = st.sidebar.text_input('Password de usuario',type='password')
     password_encriptado = encripta(password_usuario)
     st.session_state.login_usuario = login_usuario
     st.session_state.password_encriptado = password_encriptado
-    print("antes del botón login")
-    print(f" st.session_state.login_usuario {st.session_state.login_usuario}")
-    print(f" password_usuario {password_usuario}")
-    #st.sidebar.button("login",on_click=login_click)
-    #st.sidebar.button("login")
     if st.sidebar.button("login"):
-        print("despues del botón login true")
         datos,codigo_rol, rol = selecciona_usuario(st.session_state.login_usuario,st.session_state.password_encriptado)
         if datos:
-            print("valor de datos ",datos)
-            #st.sidebar.success("logeado con  {}".format(st.session_state.login_usuario))
             st.session_state.usuario = st.session_state.login_usuario
             st.session_state.codigo_usuario = datos
             st.session_state.rol_usuario = rol
@@ -166,35 +150,16 @@ def click_cambio_usuario():
     del st.session_state.codigo_usuario
     del st.session_state.rol_usuario
     del st.session_state.codigo_rol
-    #print("dentro del cambio de usuario")
-    #st.title("Para acceder a esta ventana debe identificarse con usuario y password")
 
 def login():
     if ("usuario" not in st.session_state): # and ("usuario_validado" not in st.session_state): 
-        print("en la función login, no existe usuario")
-        
         introduce_usuario()
         
     else:
-        print("en la función login, si existe usuario")
-        #st.sidebar.success(st.session_state.usuario)
         st.sidebar.subheader(f"Usuario: {st.session_state.usuario}") 
         st.sidebar.button("cambio usuario",on_click=click_cambio_usuario)
         ventana_administracion()   
-        #if st.session_state.refresca_admin == 1:
-        #    st.session_state.refresca_admin = 0
-        #    ventana_administracion()
-
-#if ("usuario" not in st.session_state):
-#    print("impresión fuera de las funciones")
-#    st.title("Para acceder a esta ventana debe identificarse con usuario y password")
-
 
 
 if __name__ == '__main__':
-    #borra_todos_registros()
-    #crea_tabla_usuarios()
-    #inserta_usuarios("Adrian","1111",1)   
-    #inserta_usuarios("Jero","2222",1)
-    #inserta_usuarios("Otro","3333",2)
     login()

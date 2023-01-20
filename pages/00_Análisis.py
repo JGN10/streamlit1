@@ -34,10 +34,10 @@ def boton_refrescar(columnas):
     columnas_sel = []
     for col in columnas:
         columnas_sel.append(col)    
-    print(columnas_sel)
-    if c_embarazo:
-        print("el embarazo 1 ",v_embarazo[0])
-        print("el embarazo 2 ",v_embarazo[1])
+
+    #if c_embarazo:
+    #    print("el embarazo 1 ",v_embarazo[0])
+    #    print("el embarazo 2 ",v_embarazo[1])
     df_aux2=df[columnas_sel].head(int(numero_lineas_filtros))
     st.dataframe(df_aux2)
 

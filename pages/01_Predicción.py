@@ -77,7 +77,6 @@ def parametros():
                                                             df_calculos["DiabetesPedigreeFunction"]["min"]),
                 "Age": escalar_maxmin (Age, df_calculos["Age"]["max"], df_calculos["Age"]["min"])
                 }
-        #print(BMI)
         data1 = {'Embarazos': Pregnancies,
                 'Glucosa':Glucose,
                 "Presión arterial":BloodPressure,
@@ -87,9 +86,6 @@ def parametros():
                 "FPD":str(DiabetesPedigreeFunction),
                 "Edad":Age
                 }
-        #print(data1)
-        #Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age,Outcome
-        #print('embarazos ' , data1['Embarazos'])        
         features1 = pd.DataFrame(data1, index= [0])
         features = pd.DataFrame(data, index= [0])
         return features, features1
@@ -97,7 +93,7 @@ def parametros():
 
 df_calculos=pd.read_csv("calculos.csv", index_col= [0])
 df, df1= parametros()
-print(df1)
+
 st.subheader("Parámetros Proporcionados")
 st.dataframe(df1)
 
@@ -116,24 +112,15 @@ def click_csv():
         file.close()
         st.session_state.predicc_guardada = 1
 
-                
-                #+ "," + str(round(df1.iloc[0]["BMI"],1))\
-                #+ "," + str(round(df1.iloc[0]["Función de pedigrí de diabetes"],3))\
-
 def click_sqlite():
         try:
-                print("estamos en la funcion")
                 if "usuario" in st.session_state:
                         usuario_logeado = st.session_state.usuario
                 else:
                         usuario_logeado = 'Anónimo'
-                print("en el click sqlite")
-                print("en el click sqlite antes de sqlite")
                 try:
                         conexion = sql.connect(st.session_state.sqlite)
-                        print(f"en el click sqlite, después de la conexión variable sqlite {st.session_state.sqlite}")
                         c = conexion.cursor()
-                        print("después del cursor")
                 except Exception as e:
                         # logging.WARNING("Error conectar base de datos %s" % str(e))
                         print("Error conectar base de datos %s" % str(e))
@@ -141,12 +128,9 @@ def click_sqlite():
                         #c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?) RETURNING codigo", (usuario_logeado,datetime.now()))
                         c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?)", (usuario_logeado,datetime.now()))
                         cursor_cargas = c.execute('SELECT MAX(codigo) FROM cargas')    
-                        print("después del executed")
                         for fila in cursor_cargas.fetchall():
                                 #c.execute("INSERT INTO cargas (usuario,fecha) VALUES (?,?) RETURNING codigo", (usuario_logeado,datetime.now()))
-                                print("dentro del for")
                                 codigo_carga = fila[0]
-                        print("fuera del for ")
                 except Exception as e:
                 #        logging.WARNING("Error insertar base de datos %s" % str(e)) 
                        print("Error insertar base de datos %s" % str(e))
@@ -157,7 +141,6 @@ def click_sqlite():
                         + "," + str(int(df1.iloc[0]["Insulina"])) + "," + str(df1.iloc[0]["BMI"])\
                         + "," + str(df1.iloc[0]["FPD"])\
                         + "," + str(int(df1.iloc[0]["Edad"])) + "," + str(int(st.session_state.prediccion)) 
-                print("en el insert valor de cadena", cadena)
                 c.execute("INSERT INTO predicciones (formato_csv,embarazos,glucosa,"\
                                 "tension, grosor_piel, insulina, IMC, DPF,edad, resultado ,cargado)"\
                                 "VALUES(?, ?, ?, ?,?, ?, ?, ?, ?,?,?);",\
@@ -178,7 +161,6 @@ def click_sqlite():
                 
         except Exception as err:
                 print(f"Unexpected {err}, {type(err)}")
-                #print("Error insertar registros: %s" % str(e))
                 st.session_state.predicc_guardada = 2
                 conexion.rollback()
                 
@@ -208,46 +190,46 @@ def carga_lista_modelos():
 lista_modelo = carga_lista_modelos()
 col1, col2,col3 = st.columns(3)
 with col1:
-        modelo_seleccionado = st.selectbox("modelo",lista_modelo)
-        print('fuera de la funcion ', modelo_seleccionado)
+        modelo_seleccionado = st.selectbox("Modelo a utilizar",lista_modelo)
+        try:
+                conexion = sql.connect('diabetes.db')
+                c = conexion.cursor()
+                cursor_entrena_modelo = c.execute('SELECT porcentaje FROM entrena_modelo where modelo = ? order by codigo desc', (modelo_seleccionado,))    
+                for row_p in cursor_entrena_modelo.fetchall():
+                        porcentaje= row_p[0]
+                        break
+                #st.write (f"El porcentaje del modelo seleccionado es: {porcentaje}")
+        except Exception as e:
+                        # logging.WARNING("Error conectar base de datos %s" % str(e))
+                        print("Error conectar base de datos %s" % str(e))
+        finally:
+                c.close()
+                conexion.close()
+with col2:
+        st.write (f" ")
+        st.write (f"El porcentaje del modelo seleccionado es: {porcentaje}")
 
+
+        
 if st.button('Predicción'):
         try: 
                 conexion = sql.connect('diabetes.db')
                 c = conexion.cursor()
-                print('modelo seleccionado ', modelo_seleccionado)
                 cursor_fichero = c.execute('SELECT fichero, porcentaje  FROM entrena_modelo where modelo = ? order by codigo desc', (modelo_seleccionado,))    
                 for row_p in cursor_fichero.fetchall():
-                        print(row_p[0])
-                        print(row_p)
                         fichero_pkl = str(row_p[0])
-                        print('después de row_p', fichero_pkl)
                         porcentaje = row_p[1]
-                        print('después de row_p porcentaje')
                         break
                 with open(fichero_pkl, "rb") as li:
                         guarda_modelo = pickle.load(li)
-                print("paso 1")
-                print(df)
                 prediccion = guarda_modelo.predict(df)
-                print("paso 2")
                 st.session_state.prediccion= int(prediccion)
-                print("paso 3")
                 if prediccion == 0:
-                        #st.success(f"El modelo {st.session_state.modelo} indica que NO padecerá diabetes")
-                        print("paso 4")
                         st.success(f"El modelo {modelo_seleccionado} con una exactitud de {porcentaje} indica que NO padecerá diabetes")
                 else:
-                        print("paso 5")
                         st.error(f"El modelo {modelo_seleccionado} con una exactitud de {porcentaje} indica que SI padecerá diabetes") 
                 st.write("Puede guardar esta predicción para ayudarnos a mejorar el modelo utilizado y obtener mejores resultados")
                 st.write("Se disponen de varias tecnologias para almacenar su predicción. Pulse el botón que más le interese")
-                #if st.session_state.nuevo_csv != "":
-                #        st.write("Para guardar su predicción en un fichero plano, pulse el botón Fichero")
-                #        st.button("Fichero", on_click=click_csv)
-                #if st.session_state.sqlite != "":        
-                #        st.write("Para guardar su predicción en una base de datos SQLite, pulse el botón Base SQLite")
-                #        st.button("Base SQLite", on_click=click_sqlite)         
                 col1, col2 = st.columns(2)
                 with col1:
                         st.subheader("Fichero CSV")
@@ -257,11 +239,8 @@ if st.button('Predicción'):
                 with col2:
                         st.subheader("Base de datos")
                         st.write("Para guardar su predicción en una base de datos SQLite, pulse el botón Base SQLite")
-                        print("Antes del boton de click_sqlite")
                         st.button("Base SQLite", on_click=click_sqlite)
                 
-                #if st.session_state.mongodb != "":
-                #        st.write("Moooongo")
         except:
                 print("Error inesperado:", sys.exc_info()[0])
         finally:

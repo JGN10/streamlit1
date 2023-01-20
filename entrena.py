@@ -54,24 +54,19 @@ def entrena_sqlite(usuario):
         cursor_entrenamiento = c.execute ('select max(codigo) from entrenamientos')
         for row in cursor_entrenamiento.fetchall():
             codigo_entrenamiento = row[0]
-            print('el codigo de entrenamiento ', codigo_entrenamiento)
             with open(nombre_actual, 'a') as f:
                 if final_linea == -1:
                     f.write("\n")
                 cursor_predicciones = c.execute('SELECT a.codigo, a.formato_csv FROM predicciones as a WHERE a.entrenado is null')    
-                print("antes del cursor de predicciones ")
                 for row_p in cursor_predicciones.fetchall():
-                    print("dentro del cursor de predicciones ")
                     codigo_prediccion = row_p[0]
                     formato_csv = row_p[1]
-                    print("el codigo de prediccion ", codigo_prediccion)
-                    print("el valor de formato_csv ", formato_csv)
                     c.execute('update predicciones set entrenado = ? where codigo = ?', (codigo_entrenamiento,codigo_prediccion))
                     f.write(formato_csv + "\n")
         conexion.commit()
         return (codigo_entrenamiento)
     except:
-        print("en el error de entrena sqlite usuario")
+        
         print("Error inesperado:", sys.exc_info()[0])
         conexion.rollback()
         return 0
@@ -121,7 +116,6 @@ def entrena_csv(usuario, nuevo_csv):
         conexion.commit()
         return (codigo_entrenamiento)
     except:
-        print("en el error de entrena csv usuario")
         print("Error inesperado:", sys.exc_info()[0])
         conexion.rollback()
         return 0
@@ -276,7 +270,6 @@ def entrena_modelo(entrenamiento):
         conexion.commit()
         return(porcentaje, modelo,fichero)
     except:
-        print("en el error de entrena modelo")
         print("Error inesperado:", sys.exc_info()[0])
         conexion.rollback()
         return (0,0,0)
